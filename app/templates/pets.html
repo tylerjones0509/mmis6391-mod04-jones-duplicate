@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Pets</h1>
+
+    <!-- Button to trigger add pet modal -->
+    <button type="button" class="btn btn-primary mb-4" data-toggle="modal" data-target="#addPetModal">
+        Add Pet
+    </button>
+
+    <!-- Add Pet Modal -->
+    <div class="modal fade" id="addPetModal" tabindex="-1" role="dialog" aria-labelledby="addPetModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPetModalLabel">Add New Pet</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ url_for('pets.pet') }}">
+                        <div class="form-group">
+                            <label for="pet_name">Pet Name</label>
+                            <input type="text" class="form-control" id="pet_name" name="pet_name" placeholder="Pet Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pet_age">Pet Age</label>
+                            <input type="number" class="form-control" id="pet_age" name="pet_age" placeholder="Pet Age" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="owner_id">Owner</label>
+                            <select class="form-control" id="owner_id" name="owner_id" required>
+                                <option value="" disabled selected>Select Owner</option>
+                                {% for owner in all_owners %}
+                                <option value="{{ owner.owners_id }}">{{ owner.first_name }} {{ owner.last_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Pet</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table to display all pets -->
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Pet ID</th>
+                <th scope="col">Pet Name</th>
+                <th scope="col">Pet Age</th>
+                <th scope="col">Owner First Name</th>
+                <th scope="col">Owner Last Name</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pet in all_pets %}
+            <tr>
+                <td>{{ pet.pet_id }}</td>
+                <td>{{ pet.pet_name }}</td>
+                <td>{{ pet.pet_age }}</td>
+                <td>{{ pet.first_name }}</td>
+                <td>{{ pet.last_name }}</td>
+                <td>
+                    <!-- Update button to trigger update modal -->
+                    <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#updatePetModal{{ pet.pet_id }}">
+                        Update
+                    </button>
+
+                    <!-- Update Pet Modal -->
+                    <div class="modal fade" id="updatePetModal{{ pet.pet_id }}" tabindex="-1" role="dialog" aria-labelledby="updatePetModalLabel{{ pet.pet_id }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="updatePetModalLabel{{ pet.pet_id }}">Update Pet</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="{{ url_for('pets.update_pet', pet_id=pet.pet_id) }}">
+                                        <div class="form-group">
+                                            <label for="pet_name">Pet Name</label>
+                                            <input type="text" class="form-control" id="pet_name" name="pet_name" value="{{ pet.pet_name }}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="pet_age">Pet Age</label>
+                                            <input type="number" class="form-control" id="pet_age" name="pet_age" value="{{ pet.pet_age }}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="owner_id">Owner</label>
+                                            <select class="form-control" id="owner_id" name="owner_id" required>
+                                                <option value="{{ pet.owner_id }}" selected>{{ pet.first_name }} {{ pet.last_name }}</option>
+                                                {% for owner in all_owners %}
+                                                {% if owner.owners_id != pet.owner_id %}
+                                                <option value="{{ owner.owners_id }}">{{ owner.first_name }} {{ owner.last_name }}</option>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Update Pet</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delete button to trigger delete modal -->
+                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deletePetModal{{ pet.pet_id }}">
+                        Delete
+                    </button>
+
+                    <!-- Delete Pet Modal -->
+                    <div class="modal fade" id="deletePetModal{{ pet.pet_id }}" tabindex="-1" role="dialog" aria-labelledby="deletePetModalLabel{{ pet.pet_id }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deletePetModalLabel{{ pet.pet_id }}">Delete Pet</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to delete this pet?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <form action="{{ url_for('pets.delete_pet', pet_id=pet.pet_id) }}" method="POST">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+Table owners {
+    owners_id int [pk, increment]
+    first_name varchar(45)
+    last_name varchar(45)
+}
+
+Table pets {
+    pet_id int [pk, increment]
+    pet_name varchar(45)
+    pet_age int
+    owner_id int [ref: > owners.owners_id]
+}
