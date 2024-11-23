@@ -2,8 +2,19 @@
 
 {% block content %}
 
-<h1>Module 3 - Runners Example</h1>
-<br>
-<img src="{{ url_for('static', filename='assets/tyler.jpg') }}" alt="Tyler with his cool Glasses" width="300">
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Welcome to Pet Lodge Doggy Daycare!</h1>
+
+    <div class="text-center">
+        <img src="{{ url_for('static', filename='assets/doggy_daycare.jpg') }}" alt="Happy dogs at daycare" width="500" class="mb-4">
+    </div>
+
+    <p class="lead text-center">At Pet Lodge Doggy Daycare, we provide a safe, fun, and nurturing environment for your furry friends. Our dedicated staff ensures that each dog gets the attention, exercise, and socialization they need to be happy and healthy.</p>
+
+    <div class="text-center mt-5">
+        <a href="{{ url_for('pets.pet') }}" class="btn btn-primary btn-lg">View Our Pets</a>
+        <a href="{{ url_for('owners.owner') }}" class="btn btn-secondary btn-lg ml-3">Meet the Owners</a>
+    </div>
+</div>
 
 {% endblock %}
